@@ -9,8 +9,13 @@ var agentFeesElement = document.getElementById("agent_fee");
 var atmFeesElement = document.getElementById("atm_fee");
 var withdrawButton = document.getElementsByClassName("total-amount")[0];
 
+// Select the radio buttons
+var appRadio = document.getElementById("app");
+var ussidRadio = document.getElementById("ussid");
+
 // Flag to keep track of which button was clicked
 var selectedPaymentMethod = null;
+var selectedMode = "app"; // Default mode
 
 // Add event listeners to the buttons
 bkashButton.addEventListener("click", function () {
@@ -37,7 +42,20 @@ upayButton.addEventListener("click", function () {
   updateFees();
 });
 
-// Function to update fees based on the selected payment method and amount input
+// Add event listeners to the radio buttons
+appRadio.addEventListener("change", function () {
+  selectedMode = "app";
+  console.log("App mode selected");
+  updateFees();
+});
+
+ussidRadio.addEventListener("change", function () {
+  selectedMode = "ussid";
+  console.log("USSD mode selected");
+  updateFees();
+});
+
+// Function to update fees based on the selected payment method, mode, and amount input
 function updateFees() {
   var amount = parseFloat(amountInput.value);
 
@@ -49,40 +67,64 @@ function updateFees() {
     return;
   }
 
-  var charge, agentFees, atmFees;
+  var charge, agentFees, atmFees, withdrawAmount;
 
   if (selectedPaymentMethod === "bkash") {
-    charge = "18.5 BDT";
-    agentFees = amount * 0.02;
-    atmFees = amount * 0.01;
-    withdrawAmount = amount - agentFees;
-  }
-    else if (selectedPaymentMethod === "nagad") {
-    charge = "1.50%";
-    agentFees = amount * 0.01;
-    atmFees = amount * 0.02;
-    withdrawAmount = amount - agentFees;
-  }
-    else if (selectedPaymentMethod === "rocket") {
-    charge = "5%";
-    agentFees = amount * 0.01;
-    atmFees = amount * 0.03;
-    withdrawAmount = amount - agentFees;
-  }
-    else if (selectedPaymentMethod === "upay") {
-    charge = "5%";
-    agentFees = amount * 0.01;
-    atmFees = amount * 0.01;
-    withdrawAmount = amount - agentFees;
-  }
-    else {
+    if (selectedMode === "app") {
+      charge = "18.5 BDT";
+      agentFees = amount * 0.0185;
+      atmFees = amount * 0.0149;
+      withdrawAmount = amount - agentFees;
+    } else if (selectedMode === "ussid") {
+      charge = "18.5 BDT";
+      agentFees = amount * 0.0185;
+      atmFees = amount * 0.0149;
+      withdrawAmount = amount - agentFees;
+    }
+  } else if (selectedPaymentMethod === "nagad") {
+    if (selectedMode === "app") {
+      charge = "12.5 BDT";
+      agentFees = amount * 0.0125;
+      atmFees = "Can't withdraw via USSD";
+      withdrawAmount = amount - agentFees;
+    } else if (selectedMode === "ussid") {
+      charge = "15.0 BDT";
+      agentFees = amount * 0.015;
+      atmFees = "Can't withdraw via USSD";
+      withdrawAmount = amount - agentFees;
+    }
+  } else if (selectedPaymentMethod === "rocket") {
+    if (selectedMode === "app") {
+      charge = "16.7 BDT";
+      agentFees = amount * 0.0167;
+      atmFees = amount * 0.009;
+      withdrawAmount = amount - agentFees;
+    } else if (selectedMode === "ussid") {
+      charge = "16.7 BDT";
+      agentFees = amount * 0.0167;
+      atmFees = amount * 0.009;
+      withdrawAmount = amount - agentFees;
+    }
+  } else if (selectedPaymentMethod === "upay") {
+    if (selectedMode === "app") {
+      charge = "14.0 BDT";
+      agentFees = amount * 0.014;
+      atmFees = amount * 0.008;
+      withdrawAmount = amount - agentFees;
+    } else if (selectedMode === "ussid") {
+      charge = "10.0 BDT";
+      agentFees = amount * 0.014;
+      atmFees = amount * 0.008;
+      withdrawAmount = amount - agentFees;
+    }
+  } else {
     return;
   }
 
   chargeElement.innerHTML = charge;
   agentFeesElement.innerHTML = agentFees.toFixed(2);
-  atmFeesElement.innerHTML = atmFees.toFixed(2);
-  withdrawButton.innerHTML = withdrawAmount;
+  atmFeesElement.innerHTML = atmFees;
+  withdrawButton.innerHTML = withdrawAmount.toFixed(2);
 }
 
 // Add event listener to the "amount" input field
