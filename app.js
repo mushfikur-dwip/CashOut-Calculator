@@ -22,7 +22,7 @@ nagadButton.addEventListener("click", function () {
   selectedPaymentMethod = "nagad";
   console.log("Nagad button clicked");
   updateFees();
-});
+}); 
 
 rocketButton.addEventListener("click", function () {
   selectedPaymentMethod = "rocket";
