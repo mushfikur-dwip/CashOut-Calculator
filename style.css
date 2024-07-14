@@ -130,6 +130,11 @@ h1 {
   outline: 0;
 }
 
+#bkash:active, #nagad:active, #rocket:active, #upay:active {
+  background: #b66f86;
+  transform: translateY(-3px);
+}
+
 .amount {
   display: flex;
   flex-direction: column;
