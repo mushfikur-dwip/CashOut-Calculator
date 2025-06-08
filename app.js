@@ -59,7 +59,9 @@ ussidRadio.addEventListener("change", function () {
 function updateFees() {
   var amount = parseFloat(amountInput.value);
 
-  if (isNaN(amount)) {
+  var result = computeFees(selectedPaymentMethod, selectedMode, amount);
+
+  if (!result) {
     chargeElement.innerHTML = "0.00";
     agentFeesElement.innerHTML = "0.00";
     atmFeesElement.innerHTML = "0.00";
@@ -67,64 +69,10 @@ function updateFees() {
     return;
   }
 
-  var charge, agentFees, atmFees, withdrawAmount;
-
-  if (selectedPaymentMethod === "bkash") {
-    if (selectedMode === "app") {
-      charge = "18.5 BDT";
-      agentFees = amount * 0.0185;
-      atmFees = amount * 0.0149;
-      withdrawAmount = amount - agentFees;
-    } else if (selectedMode === "ussid") {
-      charge = "18.5 BDT";
-      agentFees = amount * 0.0185;
-      atmFees = amount * 0.0149;
-      withdrawAmount = amount - agentFees;
-    }
-  } else if (selectedPaymentMethod === "nagad") {
-    if (selectedMode === "app") {
-      charge = "12.5 BDT";
-      agentFees = amount * 0.0125;
-      atmFees = "Can't withdraw via USSD";
-      withdrawAmount = amount - agentFees;
-    } else if (selectedMode === "ussid") {
-      charge = "15.0 BDT";
-      agentFees = amount * 0.015;
-      atmFees = "Can't withdraw via USSD";
-      withdrawAmount = amount - agentFees;
-    }
-  } else if (selectedPaymentMethod === "rocket") {
-    if (selectedMode === "app") {
-      charge = "16.7 BDT";
-      agentFees = amount * 0.0167;
-      atmFees = amount * 0.009;
-      withdrawAmount = amount - agentFees;
-    } else if (selectedMode === "ussid") {
-      charge = "16.7 BDT";
-      agentFees = amount * 0.0167;
-      atmFees = amount * 0.009;
-      withdrawAmount = amount - agentFees;
-    }
-  } else if (selectedPaymentMethod === "upay") {
-    if (selectedMode === "app") {
-      charge = "14.0 BDT";
-      agentFees = amount * 0.014;
-      atmFees = amount * 0.008;
-      withdrawAmount = amount - agentFees;
-    } else if (selectedMode === "ussid") {
-      charge = "10.0 BDT";
-      agentFees = amount * 0.014;
-      atmFees = amount * 0.008;
-      withdrawAmount = amount - agentFees;
-    }
-  } else {
-    return;
-  }
-
-  chargeElement.innerHTML = charge;
-  agentFeesElement.innerHTML = agentFees.toFixed(2);
-  atmFeesElement.innerHTML = atmFees;
-  withdrawButton.innerHTML = withdrawAmount.toFixed(2);
+  chargeElement.innerHTML = result.charge;
+  agentFeesElement.innerHTML = result.agentFees.toFixed(2);
+  atmFeesElement.innerHTML = result.atmFees;
+  withdrawButton.innerHTML = result.withdrawAmount.toFixed(2);
 }
 
 // Add event listener to the "amount" input field
